@@ -1,1 +1,85 @@
+  <!-- Formatar Windows e Ingressar no Domínio. Insira este arquivo no live usb -->
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+    <!-- Automatizar Idioma, Região, Seleção de Disco -->
+    <settings pass="windowsPE">
+        <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wic="http://microsoft.com" xmlns:xsi="http://w3.org">
+            <SetupUILanguage>
+                <UILanguage>pt-BR</UILanguage>
+            </SetupUILanguage>
+            <InputLocale>0416:00000416</InputLocale>
+            <SystemLocale>pt-BR</SystemLocale>
+            <UILanguage>pt-BR</UILanguage>
+            <UserLocale>pt-BR</UserLocale>
+        </component>
+        <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wic="http://microsoft.com" xmlns:xsi="http://w3.org">
+            <UserData>
+                <AcceptEula>true</AcceptEula>
+            </UserData>
+        </component>
+    </settings>
+
+    <!--Automatizar Entrada no Dominio e Nome do PC -->
+    <settings pass="specialize">
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wic="http://microsoft.com" xmlns:xsi="http://w3.org">
+            <!-- %COMPUTERNAME%  informa ao Windos para gerar um nome aleatório -->
+            <ComputerName>%COMPUTERNAME%</ComputerName>
+            <TimeZone>E. South America Standard Time</TimeZone>
+        </component>
+        <component name="Microsoft-Windows-UnattendedJoin" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wic="http://microsoft.com" xmlns:xsi="http://w3.org">
+            <Identification>
+                <Credentials>
+                    <!-- Substituir pelos detalhes da conta de domínio -->
+                    <Domain>company.local</Domain>
+                    <Username>domain_join_user</Username>
+                    <Password>
+                        <Value>YourDomainPassword123</Value>
+                        <PlainText>true</PlainText>
+                    </Password>
+                </Credentials>
+                <JoinDomain>company.local</JoinDomain>
+                <!-- Opcional: Especificar o caminho de uma OU caso necessário, caso contrário deixe comentado -->
+                <!-- <MachineObjectOU>OU=Workstations,DC=company,DC=local</MachineObjectOU> -->
+            </Identification>
+        </component>
+    </settings>
+
+    <!-- Pular OOBE e criar uma conta local temporária -->
+    <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wic="http://microsoft.com" xmlns:xsi="http://w3.org">
+            <AutoLogon>
+                <Password>
+                    <Value>LocalAdminPass123</Value>
+                    <PlainText>true</PlainText>
+                </Password>
+                <Enabled>true</Enabled>
+                <LogonCount>1</LogonCount>
+                <Username>TempAdmin</Username>
+            </AutoLogon>
+            <OOBE>
+                <HideEULAPage>true</HideEULAPage>
+                <HideLocalAccountScreen>true</HideLocalAccountScreen>
+                <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+                <HideOnlineAccountScreen>true</HideOnlineAccountScreen>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+                <NetworkLocation>Work</NetworkLocation>
+                <ProtectYourPC>1</ProtectYourPC>
+            </OOBE>
+            <UserAccounts>
+                <LocalAccounts>
+                    <LocalAccount Action="Add">
+                        <Password>
+                            <Value>LocalAdminPass123</Value>
+                            <PlainText>true</PlainText>
+                        </Password>
+                        <Description>Temporary setup account</Description>
+                        <DisplayName>Temp Admin</DisplayName>
+                        <Group>Administrators</Group>
+                        <Name>TempAdmin</Name>
+                    </LocalAccount>
+                </LocalAccounts>
+            </UserAccounts>
+        </component>
+    </settings>
+</unattend>
 
